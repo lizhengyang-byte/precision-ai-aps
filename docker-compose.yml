@@ -1,0 +1,13 @@
+services:
+  aps:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - TZ=Asia/Shanghai
+      - DATABASE_URL=sqlite:///data/aps.db
+      - AUTO_SCHEDULE_ON_START=1
+      - SOLVE_TIME_LIMIT=8
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
