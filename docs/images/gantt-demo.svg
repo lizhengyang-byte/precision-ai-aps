@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1296" height="318" viewBox="0 0 1296 318" font-family="Noto Sans CJK SC, Microsoft YaHei, sans-serif">
+<rect width="1296" height="318" fill="#ffffff"/>
+<line x1="96.0" y1="26" x2="96.0" y2="296" stroke="#e3e8ef"/>
+<text x="99.0" y="18" font-size="9" fill="#64748b">11/28</text>
+<line x1="398.0" y1="26" x2="398.0" y2="296" stroke="#e3e8ef"/>
+<text x="401.0" y="18" font-size="9" fill="#64748b">11/29</text>
+<line x1="700.1" y1="26" x2="700.1" y2="296" stroke="#e3e8ef"/>
+<text x="703.1" y="18" font-size="9" fill="#64748b">11/30</text>
+<line x1="1002.1" y1="26" x2="1002.1" y2="296" stroke="#e3e8ef"/>
+<text x="1005.1" y="18" font-size="9" fill="#64748b">12/1</text>
+<line x1="0" y1="26" x2="1296" y2="26" stroke="#eef2f6"/>
+<text x="6" y="44.0" font-size="10" fill="#334155">CMM-M01</text>
+<line x1="0" y1="56" x2="1296" y2="56" stroke="#eef2f6"/>
+<text x="6" y="74.0" font-size="10" fill="#334155">CNC-M01</text>
+<line x1="0" y1="86" x2="1296" y2="86" stroke="#eef2f6"/>
+<text x="6" y="104.0" font-size="10" fill="#334155">CNC-M02</text>
+<line x1="0" y1="116" x2="1296" y2="116" stroke="#eef2f6"/>
+<text x="6" y="134.0" font-size="10" fill="#334155">CNC-M03</text>
+<line x1="0" y1="146" x2="1296" y2="146" stroke="#eef2f6"/>
+<text x="6" y="164.0" font-size="10" fill="#334155">CNC-M04</text>
+<line x1="0" y1="176" x2="1296" y2="176" stroke="#eef2f6"/>
+<text x="6" y="194.0" font-size="10" fill="#334155">CNC-M05</text>
+<line x1="0" y1="206" x2="1296" y2="206" stroke="#eef2f6"/>
+<text x="6" y="224.0" font-size="10" fill="#334155">EDM-M01</text>
+<line x1="0" y1="236" x2="1296" y2="236" stroke="#eef2f6"/>
+<text x="6" y="254.0" font-size="10" fill="#334155">GRD-M01</text>
+<line x1="0" y1="266" x2="1296" y2="266" stroke="#eef2f6"/>
+<text x="6" y="284.0" font-size="10" fill="#334155">HT-M01</text>
+<rect x="196.7" y="120" width="51.7" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127001 五轴铣叶形槽 / CNC-M03 / 王强</title></rect>
+<rect x="249.5" y="210" width="13.1" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127001 电火花去毛刺 / EDM-M01 / 刘洋</title></rect>
+<rect x="263.8" y="270" width="25.2" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127001 真空热处理 / HT-M01 / 周涛</title></rect>
+<rect x="290.2" y="240" width="22.3" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127001 精密磨基准面 / GRD-M01 / 张伟</title></rect>
+<rect x="313.7" y="30" width="8.2" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127001 三坐标检测 / CMM-M01 / 孙悦</title></rect>
+<rect x="196.7" y="60" width="45.4" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127002 CNC 粗铣外形 / CNC-M01 / 刘洋</title></rect>
+<rect x="243.2" y="150" width="49.4" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127002 数控车密封面 / CNC-M04 / 陈晨</title></rect>
+<rect x="313.7" y="240" width="32.4" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127002 精密磨配合面 / GRD-M01 / 张伟</title></rect>
+<rect x="800.8" y="30" width="8.4" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127002 三坐标全尺寸检测 / CMM-M01 / 孙悦</title></rect>
+<rect x="232.3" y="180" width="45.4" height="22" rx="3" fill="#f0b429" stroke="#ffffff" stroke-width="0.6"><title>PO20261127003 车外圆及端面 / CNC-M05 / 赵磊</title></rect>
+<rect x="278.9" y="180" width="39.7" height="22" rx="3" fill="#f0b429" stroke="#ffffff" stroke-width="0.6"><title>PO20261127003 镗内孔 / CNC-M05 / 赵磊</title></rect>
+<rect x="819.2" y="240" width="35.1" height="22" rx="3" fill="#f0b429" stroke="#ffffff" stroke-width="0.6"><title>PO20261127003 磨内孔 / GRD-M01 / 张伟</title></rect>
+<rect x="855.5" y="30" width="7.6" height="22" rx="3" fill="#f0b429" stroke="#ffffff" stroke-width="0.6"><title>PO20261127003 内径检测 / CMM-M01 / 孙悦</title></rect>
+<rect x="196.7" y="150" width="41.8" height="22" rx="3" fill="#f0b429" stroke="#ffffff" stroke-width="0.6"><title>PO20261127004 车削齿轮坯 / CNC-M04 / 陈晨</title></rect>
+<rect x="243.2" y="60" width="38.7" height="22" rx="3" fill="#f0b429" stroke="#ffffff" stroke-width="0.6"><title>PO20261127004 滚齿 / CNC-M01 / 李敏</title></rect>
+<rect x="290.2" y="270" width="24.0" height="22" rx="3" fill="#f0b429" stroke="#ffffff" stroke-width="0.6"><title>PO20261127004 渗碳热处理 / HT-M01 / 周涛</title></rect>
+<rect x="855.5" y="240" width="41.8" height="22" rx="3" fill="#f0b429" stroke="#ffffff" stroke-width="0.6"><title>PO20261127004 磨齿 / GRD-M01 / 张伟</title></rect>
+<rect x="898.5" y="30" width="9.3" height="22" rx="3" fill="#f0b429" stroke="#ffffff" stroke-width="0.6"><title>PO20261127004 齿形检测 / CMM-M01 / 孙悦</title></rect>
+<rect x="249.5" y="120" width="38.2" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127005 五轴铣叶形槽 / CNC-M03 / 王强</title></rect>
+<rect x="289.0" y="210" width="9.7" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127005 电火花去毛刺 / EDM-M01 / 刘洋</title></rect>
+<rect x="315.4" y="270" width="22.7" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127005 真空热处理 / HT-M01 / 周涛</title></rect>
+<rect x="800.8" y="240" width="17.3" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127005 精密磨基准面 / GRD-M01 / 张伟</title></rect>
+<rect x="819.2" y="30" width="6.1" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127005 三坐标检测 / CMM-M01 / 孙悦</title></rect>
+<rect x="196.7" y="180" width="34.5" height="22" rx="3" fill="#4f8cff" stroke="#ffffff" stroke-width="0.6"><title>PO20261127006 车削壳体 / CNC-M05 / 周涛</title></rect>
+<rect x="232.3" y="90" width="29.2" height="22" rx="3" fill="#4f8cff" stroke="#ffffff" stroke-width="0.6"><title>PO20261127006 铣密封槽 / CNC-M02 / 张伟</title></rect>
+<rect x="263.8" y="210" width="20.8" height="22" rx="3" fill="#4f8cff" stroke="#ffffff" stroke-width="0.6"><title>PO20261127006 电火花开孔 / EDM-M01 / 刘洋</title></rect>
+<rect x="285.8" y="30" width="8.0" height="22" rx="3" fill="#4f8cff" stroke="#ffffff" stroke-width="0.6"><title>PO20261127006 外观与尺寸检测 / CMM-M01 / 孙悦</title></rect>
+<rect x="800.8" y="60" width="35.3" height="22" rx="3" fill="#f0b429" stroke="#ffffff" stroke-width="0.6"><title>PO20261127007 CNC 粗铣外形 / CNC-M01 / 王强</title></rect>
+<rect x="868.9" y="180" width="38.0" height="22" rx="3" fill="#f0b429" stroke="#ffffff" stroke-width="0.6"><title>PO20261127007 数控车密封面 / CNC-M05 / 王强</title></rect>
+<rect x="1118.8" y="240" width="26.1" height="22" rx="3" fill="#f0b429" stroke="#ffffff" stroke-width="0.6"><title>PO20261127007 精密磨配合面 / GRD-M01 / 张伟</title></rect>
+<rect x="1146.0" y="30" width="6.6" height="22" rx="3" fill="#f0b429" stroke="#ffffff" stroke-width="0.6"><title>PO20261127007 三坐标全尺寸检测 / CMM-M01 / 孙悦</title></rect>
+<rect x="800.8" y="180" width="35.3" height="22" rx="3" fill="#4f8cff" stroke="#ffffff" stroke-width="0.6"><title>PO20261127008 车外圆及端面 / CNC-M05 / 赵磊</title></rect>
+<rect x="862.6" y="150" width="31.3" height="22" rx="3" fill="#4f8cff" stroke="#ffffff" stroke-width="0.6"><title>PO20261127008 镗内孔 / CNC-M04 / 赵磊</title></rect>
+<rect x="921.6" y="240" width="28.4" height="22" rx="3" fill="#4f8cff" stroke="#ffffff" stroke-width="0.6"><title>PO20261127008 磨内孔 / GRD-M01 / 张伟</title></rect>
+<rect x="1102.8" y="30" width="5.9" height="22" rx="3" fill="#4f8cff" stroke="#ffffff" stroke-width="0.6"><title>PO20261127008 内径检测 / CMM-M01 / 孙悦</title></rect>
+<rect x="800.8" y="120" width="31.5" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127009 五轴铣叶形槽 / CNC-M03 / 李敏</title></rect>
+<rect x="833.5" y="210" width="8.0" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127009 电火花去毛刺 / EDM-M01 / 刘洋</title></rect>
+<rect x="842.7" y="270" width="21.5" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127009 真空热处理 / HT-M01 / 周涛</title></rect>
+<rect x="1102.8" y="240" width="14.7" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127009 精密磨基准面 / GRD-M01 / 张伟</title></rect>
+<rect x="1118.8" y="30" width="5.1" height="22" rx="3" fill="#ef6b6b" stroke="#ffffff" stroke-width="0.6"><title>PO20261127009 三坐标检测 / CMM-M01 / 孙悦</title></rect>
+<rect x="800.8" y="150" width="60.7" height="22" rx="3" fill="#4f8cff" stroke="#ffffff" stroke-width="0.6"><title>PO20261127010 车削齿轮坯 / CNC-M04 / 陈晨</title></rect>
+<text x="803.8" y="166.0" font-size="8" fill="#0b1220">27010</text>
+<rect x="862.6" y="60" width="53.3" height="22" rx="3" fill="#4f8cff" stroke="#ffffff" stroke-width="0.6"><title>PO20261127010 滚齿 / CNC-M01 / 李敏</title></rect>
+<rect x="917.2" y="270" width="28.2" height="22" rx="3" fill="#4f8cff" stroke="#ffffff" stroke-width="0.6"><title>PO20261127010 渗碳热处理 / HT-M01 / 周涛</title></rect>
+<rect x="1146.0" y="240" width="58.6" height="22" rx="3" fill="#4f8cff" stroke="#ffffff" stroke-width="0.6"><title>PO20261127010 磨齿 / GRD-M01 / 张伟</title></rect>
+<rect x="1205.8" y="30" width="13.5" height="22" rx="3" fill="#4f8cff" stroke="#ffffff" stroke-width="0.6"><title>PO20261127010 齿形检测 / CMM-M01 / 孙悦</title></rect>
+<rect x="800.8" y="90" width="28.6" height="22" rx="3" fill="#4f8cff" stroke="#ffffff" stroke-width="0.6"><title>PO20261127011 CNC 粗铣外形 / CNC-M02 / 刘洋</title></rect>
+<rect x="837.3" y="180" width="30.5" height="22" rx="3" fill="#4f8cff" stroke="#ffffff" stroke-width="0.6"><title>PO20261127011 数控车密封面 / CNC-M05 / 王强</title></rect>
+<rect x="898.5" y="240" width="21.9" height="22" rx="3" fill="#4f8cff" stroke="#ffffff" stroke-width="0.6"><title>PO20261127011 精密磨配合面 / GRD-M01 / 张伟</title></rect>
+<rect x="921.6" y="30" width="5.3" height="22" rx="3" fill="#4f8cff" stroke="#ffffff" stroke-width="0.6"><title>PO20261127011 三坐标全尺寸检测 / CMM-M01 / 孙悦</title></rect>
+<rect x="1102.8" y="180" width="29.2" height="22" rx="3" fill="#f0b429" stroke="#ffffff" stroke-width="0.6"><title>PO20261127012 车削壳体 / CNC-M05 / 周涛</title></rect>
+<rect x="1133.2" y="120" width="25.0" height="22" rx="3" fill="#f0b429" stroke="#ffffff" stroke-width="0.6"><title>PO20261127012 铣密封槽 / CNC-M03 / 刘洋</title></rect>
+<rect x="1159.5" y="210" width="17.7" height="22" rx="3" fill="#f0b429" stroke="#ffffff" stroke-width="0.6"><title>PO20261127012 电火花开孔 / EDM-M01 / 刘洋</title></rect>
+<rect x="1178.3" y="30" width="6.8" height="22" rx="3" fill="#f0b429" stroke="#ffffff" stroke-width="0.6"><title>PO20261127012 外观与尺寸检测 / CMM-M01 / 孙悦</title></rect>
+<text x="6" y="312" font-size="9" fill="#64748b">红=加急  黄=较高  蓝=普通 · 来自 AI 排产版本 #1</text>
+</svg>
