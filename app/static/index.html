@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>精密加工 AI 智能排产与进度管控</title>
+<link rel="icon" href="data:," />
+<link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="title">
+    <h1>精密加工 AI 智能排产与进度管控</h1>
+    <div class="sub"><span id="versionBadge">等待排产</span><span class="dot">·</span><span id="llmTag">规则引擎</span></div>
+  </div>
+  <div class="actions">
+    <select id="strategy" title="排产策略">
+      <option value="auto" selected>AI 自动选策略</option>
+      <option value="balanced">均衡排产</option>
+      <option value="due_date">交期优先</option>
+      <option value="efficiency">产能效率优先</option>
+      <option value="changeover">换型最少</option>
+    </select>
+    <button id="btnSolve" class="primary">开始排产</button>
+  </div>
+</header>
+
+<main>
+  <section class="kpis" id="kpis"></section>
+
+  <section class="grid">
+    <div class="card gantt-card">
+      <div class="card-head">
+        <h2>设备甘特图</h2>
+        <div class="legend">
+          <span class="lg"><i style="background:#f26b6b"></i>加急</span>
+          <span class="lg"><i style="background:#f5b544"></i>常规</span>
+          <span class="lg"><i style="background:#4f8cff"></i>低优先</span>
+          <span class="lg"><i style="background:#22d3ee"></i>执行中</span>
+          <span class="lg"><i style="background:#34d399"></i>已完工</span>
+          <span class="hint">点击工序可报工</span>
+        </div>
+      </div>
+      <div class="gantt-wrap">
+        <svg id="gantt" viewBox="0 0 900 120" width="900" height="120" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+    </div>
+
+    <aside class="card ai-card">
+      <div class="ai-panel" id="advice"></div>
+      <div class="ai-panel" id="radar"></div>
+      <div class="ai-panel chat">
+        <h3>自然语言调度</h3>
+        <div id="chatLog" class="chat-log">
+          <div class="msg bot">试着说：“三号加工中心故障停机 4 小时，重新排产” 或 “PO 加急”。</div>
+        </div>
+        <form id="chatForm">
+          <input id="chatInput" type="text" placeholder="用中文描述现场变化，例如 张伟请假 8 小时" autocomplete="off" />
+          <button>发送</button>
+        </form>
+        <div class="sims">
+          <button class="ghost" data-sim="breakdown">设备故障</button>
+          <button class="ghost" data-sim="urgent">订单加急</button>
+          <button class="ghost" data-sim="leave">人员缺勤</button>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="card tabs-card">
+    <div class="tabs">
+      <button class="active" data-tab="orders">订单与交付</button>
+      <button data-tab="machines">设备台账</button>
+      <button data-tab="workers">技能矩阵</button>
+      <button data-tab="versions">排产版本</button>
+    </div>
+    <div id="tab-orders" class="tab-body"></div>
+    <div id="tab-machines" class="tab-body hidden"></div>
+    <div id="tab-workers" class="tab-body hidden"></div>
+    <div id="tab-versions" class="tab-body hidden"></div>
+  </section>
+</main>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-body">
+    <h3 id="modalTitle">工序报工</h3>
+    <div id="modalBody"></div>
+    <div class="modal-actions">
+      <button id="modalCancel" class="ghost">取消</button>
+      <button id="modalSubmit" class="primary">提交报工</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>
