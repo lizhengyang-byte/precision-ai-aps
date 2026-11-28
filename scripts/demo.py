@@ -40,7 +40,9 @@ def print_gantt(assignments, machines, max_rows: int = 12) -> None:
                 continue
             s = (datetime.fromisoformat(a["start"]) - t0).total_seconds() / 3600
             e = (datetime.fromisoformat(a["end"]) - t0).total_seconds() / 3600
-            for i in range(int(s / span * (width - 1)), max(int(s / span * (width - 1)) + 1, int(e / span * (width - 1))):
+            start_i = int(s / span * (width - 1))
+            end_i = max(start_i + 1, int(e / span * (width - 1)))
+            for i in range(start_i, end_i):
                 if 0 <= i < width:
                     row[i] = "█"
         print(f"{m['code']:<10}|" + "".join(row))
