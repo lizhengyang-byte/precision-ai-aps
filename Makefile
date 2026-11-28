@@ -1,16 +1,22 @@
-.PHONY: install dev test demo docker
+.PHONY: install lint test run demo prod logs
 
 install:
-	python -m venv .venv && . .venv/bin/activate && pip install -r requirements.txt
+	pip install -r requirements.txt -r requirements-dev.txt
 
-dev:
-	uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+lint:
+	ruff check app tests scripts
 
 test:
 	pytest -q
 
-demo:
-	python scripts/demo.py --plot
+run:
+	uvicorn app.main:app --reload --port 8000
 
-docker:
-	docker build -t precision-ai-aps . && docker run -p 8000:8000 precision-ai-aps
+demo:
+	python scripts/demo.py
+
+prod:
+	docker compose up --build -d
+
+logs:
+	docker compose logs -f api

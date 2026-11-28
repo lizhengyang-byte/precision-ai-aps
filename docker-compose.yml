@@ -1,13 +1,40 @@
 services:
-  aps:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: aps
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aps_dev_pass}
+      POSTGRES_DB: aps
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aps -d aps"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
     build: .
+    environment:
+      DATABASE_URL: postgresql+psycopg://aps:${POSTGRES_PASSWORD:-aps_dev_pass}@db:5432/aps
+      AUTH_REQUIRED: "1"
+      AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET 必填，用于签发登录令牌}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-ChangeMe@2026}
+      CORS_ORIGINS: ${CORS_ORIGINS:-}
+      AUTO_SCHEDULE_ON_START: ${AUTO_SCHEDULE_ON_START:-1}
+      STARTUP_SOLVE_SECONDS: ${STARTUP_SOLVE_SECONDS:-6}
+      FREEZE_HORIZON_MINUTES: ${FREEZE_HORIZON_MINUTES:-120}
+      TZ: Asia/Shanghai
     ports:
       - "8000:8000"
-    environment:
-      - TZ=Asia/Shanghai
-      - DATABASE_URL=sqlite:///data/aps.db
-      - AUTO_SCHEDULE_ON_START=1
-      - SOLVE_TIME_LIMIT=8
-    volumes:
-      - ./data:/app/data
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
+    volumes:
+      - aps_data:/app/data
+
+volumes:
+  pgdata:
+  aps_data:

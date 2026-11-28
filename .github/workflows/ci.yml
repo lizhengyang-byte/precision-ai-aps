@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: pip install -r requirements.txt -r requirements-dev.txt
+      - name: Lint
+        run: ruff check app tests scripts
+      - name: Test
+        run: |
+          mkdir -p data
+          pytest -q
+      - name: Demo smoke
+        run: python scripts/demo.py --time-limit 3
+
+  image:
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t aps:ci .
+      - name: Container smoke
+        run: |
+          docker run -d --name aps -p 8000:8000 \
+            -e AUTH_REQUIRED=1 -e AUTH_SECRET=ci-secret -e ADMIN_PASSWORD=Ci@123456 \
+            -e DATABASE_URL=sqlite:///./data/aps.db -e AUTO_SCHEDULE_ON_START=0 aps:ci
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8000/readyz && break || sleep 2; done
+          curl -fsS http://127.0.0.1:8000/readyz
