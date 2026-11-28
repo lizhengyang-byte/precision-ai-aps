@@ -4,6 +4,8 @@
 
 > 定位：不是一个“大而全”的 MES，而是车间最缺的那一层——**能算、能改、能解释的智能排产与进度控制内核**。
 
+**v1.1 生产化基线**：在原型基础上补齐了账号与 RBAC、计划“提交—审批—发布—回滚”状态机、全量审计、派工单、OEE 与 7 天产能负荷、冻结窗口（默认 120 分钟）、逾期订单自动加权、健康检查/指标端点、PostgreSQL 与容器化部署、GitHub Actions CI（lint + 20 项测试 + 镜像冒烟）。目标不是能演示，而是能在车间连续运行。
+
 ![AI 排产甘特图](docs/images/gantt-demo.svg)
 
 ## 1. 项目背景与现场问题
@@ -26,6 +28,8 @@
 - **自然语言调度**： “CNC-M03 故障停机 4 小时，重新排产”“PO20261127001 加急”——规则解析为主，可选大模型兜底。
 - **事件驱动重排**：故障、缺勤、插单、批量变更写入事件表，自动生成新版本并输出“哪些工序改了、改到哪里”的版本差异。
 - **进度管控看板**：设备甘特图、订单进度、报工、良品/报废、任务完成率，全部来自同一份排产版本。
+- **计划治理**：任何重排都先落“草稿”，经提交、审批后才能发布到车间；发布旧版本自动归档，回滚以克隆新版本实现，历史不可篡改。
+- **账号与权限**：admin / planner / operator / viewer 四类角色，PBKDF2 口令散列 + JWT，登录失败锁定，全部写操作落审计表。
 
 ## 3. 系统架构
 
@@ -51,13 +55,23 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-打开 <http://localhost:8000>，首次启动会自动建库、灌入 12 张演示订单并完成一次排产（约 8 秒）。接口文档在 `/docs`。
+打开 <http://localhost:8000>，首次启动会自动建库、创建管理员（账号取自 `ADMIN_USERNAME`，默认 `admin`；口令取自 `ADMIN_PASSWORD`，未配置时为 `ChangeMe@2026`）、灌入 12 张演示订单并完成一次排产（约 8 秒）。接口文档在 `/docs`。
 
-Docker：
+> 生产部署务必显式配置 `AUTH_REQUIRED=1`、`AUTH_SECRET`、`ADMIN_PASSWORD`，并在首次登录后修改口令。
+
+Docker（单机 SQLite）：
 
 ```bash
 docker build -t precision-ai-aps .
-docker run -p 8000:8000 precision-ai-aps
+docker run -p 8000:8000 -e AUTH_SECRET="$(openssl rand -hex 32)" precision-ai-aps
+```
+
+Docker Compose（PostgreSQL + API，推荐生产）：
+
+```bash
+cp .env.example .env   # 填入 AUTH_SECRET / ADMIN_PASSWORD / POSTGRES_PASSWORD
+docker compose up -d --build
+curl -s localhost:8000/readyz
 ```
 
 命令行演示（含甘特图导出）：
@@ -69,7 +83,8 @@ python scripts/demo.py --plot
 测试：
 
 ```bash
-pytest -q        # 12 项：引擎约束、API、AI 解析与策略
+pytest -q        # 20 项：引擎约束、API、AI、鉴权/RBAC、计划状态机、OEE/派工/健康检查
+ruff check app tests scripts
 ```
 
 ## 5. 排产模型
@@ -88,7 +103,7 @@ pytest -q        # 12 项：引擎约束、API、AI 解析与策略
 **目标函数**：
 
 \[
-\min \; 100\sum_{o} w_o T_o \;+\; 2C_{\max} \;+\; \sum_i s_i
+m\in \; 100\sum_{o} w_o T_o \;+\; 2C_{\max} \;+\; \sum_i s_i
 \]
 
 其中 \(T_o=\max(0,\,C_o-d_o)\) 为订单拖期，\(w_o\) 为优先级权重（普通 5 / 较高 15 / 紧急 40），\(C_{\max}\) 为完工跨度。不同策略只改变三项权重，不改变约束，保证计划始终可执行。
@@ -123,6 +138,16 @@ pytest -q        # 12 项：引擎约束、API、AI 解析与策略
 | GET | `/api/ai/advice` | AI 策略建议 |
 | GET | `/api/ai/radar` | 交付风险雷达 |
 | POST | `/api/ai/chat` | 自然语言调度指令 |
+| POST | `/api/auth/login` | 登录换取 JWT（失败 5 次锁定 60 秒） |
+| GET | `/api/auth/me` | 当前账号信息 |
+| GET/POST | `/api/users` | 账号列表 / 新建账号（仅 admin） |
+| POST | `/api/plan/{id}/submit·approve·reject·publish·rollback` | 计划状态机：提交、审批、驳回、发布、回滚 |
+| GET | `/api/plan/state` | 当前版本状态与审批轨迹 |
+| GET | `/api/dispatch?day=` | 当日派工单（含换型、冻结标识） |
+| GET | `/api/oee` | 设备与整体 OEE（可用率/性能率/良品率） |
+| GET | `/api/capacity?days=7` | 未来产能负荷预测 |
+| GET | `/api/audits` | 审计流水 |
+| GET | `/healthz` `/readyz` `/metrics` | 健康检查、就绪检查、Prometheus 指标 |
 
 示例：
 
@@ -136,14 +161,18 @@ curl -X POST localhost:8000/api/ai/chat -H 'Content-Type: application/json' \
 ```
 precision-ai-aps/
 ├── app/
-│   ├── main.py              # FastAPI 入口 + 静态看板
+│   ├── main.py              # FastAPI 入口 + 鉴权/日志/健康检查/静态看板
+│   ├── security.py          # PBKDF2 口令、JWT、角色依赖、初始管理员
+│   ├── ops.py               # 审计、计划状态机、回滚、派工、OEE、产能
 │   ├── models.py            # 主数据/版本/报工/事件
-│   ├── services.py          # 建 Problem、求解、落版本、版本差异
+│   ├── models_ext.py        # 账号、审计、审批表
+│   ├── services.py          # 建 Problem、求解、落版本、版本差异、冻结窗口
 │   ├── seed.py              # 精密加工演示车间
 │   ├── engine/              # 日历、领域模型、CP-SAT、启发式、指标
 │   ├── ai/                  # 策略推荐、风险雷达、指令解析、LLM
-│   ├── api/routes.py        # REST 接口
-│   └── static/              # 单页看板（原生 JS + SVG 甘特图）
+│   ├── api/routes.py        # 排产/主数据/报工接口
+│   ├── api/pro.py           # 鉴权、账号、计划治理、派工/OEE/审计接口
+│   └── static/              # 单页看板（app.js + pro.js：登录/审批/派工视图）
 ├── docs/                    # 调研、现场流程、架构、AI 设计、部署
 ├── scripts/demo.py          # 命令行演示
 └── tests/                   # 引擎/API/AI 测试
@@ -168,12 +197,14 @@ precision-ai-aps/
 
 ## 11. 路线图
 
+- [x] 计划治理：提交—审批—发布—回滚 + 全量审计（v1.1）
+- [x] 派工单、OEE、7 天产能负荷、冻结窗口（v1.1）
+- [x] PostgreSQL、容器化、CI 与健康检查（v1.1）
 - [ ] 换型时间序列相关（sequence-dependent setup）与成组技术
-- [ ] 多班次/多技能等级的人员排班联合优化
-- [ ] 订单拆批与替代设备/替代工艺
-- [ ] 与 ERPNext / 用友 / 金蝶订单接口
-- [ ] 设备状态接入（OPC UA / MQTT），OEE 与排产联动
-- [ ] 基于历史报工的学习型工时预测
+- [ ] 订单拆批、替代设备/替代工艺与物料齐套约束
+- [ ] 扫码报工与设备数采（OPC UA / MQTT），OEE 改用实际节拍
+- [ ] 多车间/外协联合排产与多工厂产能协同
+- [ ] 与 ERPNext / 用友 / 金蝶订单与工单接口
 
 ## 12. 许可
 
