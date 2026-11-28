@@ -63,7 +63,6 @@ def plot_gantt(assignments, machines, out: Path) -> bool:
     plt.rcParams["svg.fonttype"] = "none"
 
     t0 = min(datetime.fromisoformat(a["start"]) for a in assignments)
-    t1 = max(datetime.fromisoformat(a["end"]) for a in assignments)
     colors = {3: "#ef6b6b", 2: "#f0b429", 1: "#4f8cff"}
 
     fig, ax = plt.subplots(figsize=(13, 6.2), dpi=150)
