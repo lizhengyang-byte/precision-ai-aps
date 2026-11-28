@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from collections import defaultdict
 from datetime import datetime, timedelta
 
@@ -10,13 +11,14 @@ from sqlalchemy.orm import Session, joinedload
 from . import models
 from .ai.strategy import recommend_strategy
 from .engine.calendar import ShopCalendar
-from .engine.cpsat_solver import cpsat_available, solve_cpsat
+from .engine.cpsat_solver import solve_cpsat
 from .engine.heuristic import solve_heuristic
 from .engine.metrics import compute_metrics
 from .engine.model import FixedAssignment, Operator, Problem, Task, WorkCenter
 
 PRIORITY_WEIGHT = {1: 5, 2: 15, 3: 40}
 PRIORITY_LABEL = {1: "普通", 2: "较高", 3: "紧急"}
+FREEZE_HORIZON_MINUTES = int(os.getenv("FREEZE_HORIZON_MINUTES", "120"))
 
 
 def _event_blocks(db: Session, calendar: ShopCalendar, machines, workers):
@@ -35,8 +37,10 @@ def _event_blocks(db: Session, calendar: ShopCalendar, machines, workers):
 
 
 def build_problem(db: Session, now: datetime | None = None, freeze: bool = True,
-                  version: models.ScheduleVersion | None = None) -> tuple[Problem, ShopCalendar]:
+                  version: models.ScheduleVersion | None = None,
+                  freeze_horizon_minutes: int | None = None) -> tuple[Problem, ShopCalendar]:
     now = now or datetime.now()
+    horizon_minutes = FREEZE_HORIZON_MINUTES if freeze_horizon_minutes is None else freeze_horizon_minutes
     calendar = ShopCalendar(start=now, days=21)
     horizon = calendar.total_minutes
     now_wm = 0
@@ -67,13 +71,14 @@ def build_problem(db: Session, now: datetime | None = None, freeze: bool = True,
         )
         operator_by_name[w.name] = w.id
 
-    # 冻结：上一版本中已开工 / 已完工的工序
+    # 冻结：上一版本中已开工 / 已完工，以及即将开工（冻结窗口内）的工序
     fixed: list[FixedAssignment] = []
     fixed_ends: dict[str, int] = {}
     status_keep: dict[str, dict] = {}
     if freeze and version is not None:
+        freeze_until = now + timedelta(minutes=horizon_minutes)
         for a in version.assignments:
-            if a.status in ("doing", "done") or a.start <= now:
+            if a.status in ("doing", "done") or a.start <= freeze_until:
                 start_wm = calendar.to_wm(a.start)
                 dur = max(1, int((a.end - a.start).total_seconds() // 60))
                 fixed.append(
@@ -117,6 +122,9 @@ def build_problem(db: Session, now: datetime | None = None, freeze: bool = True,
                 prev = f"{order.code}-{routing.seq - 1}"
                 if prev in fixed_ends:
                     min_start = max(min_start, fixed_ends[prev])
+            base_weight = PRIORITY_WEIGHT.get(order.priority, 10)
+            # 已过交期的订单按超期时长自动加权，避免“老单越拖越没人管”
+            aging = max(0, min(30, (now_wm - due) // 120)) if due < now_wm else 0
             tasks.append(
                 Task(
                     key=key, order_id=order.id, order_code=order.code,
@@ -124,7 +132,7 @@ def build_problem(db: Session, now: datetime | None = None, freeze: bool = True,
                     seq=routing.seq, name=routing.name, process_type=routing.process_type,
                     duration=duration, quantity=order.qty, required_level=routing.required_level,
                     min_start=min_start, due=due,
-                    priority=order.priority, weight=PRIORITY_WEIGHT.get(order.priority, 10),
+                    priority=order.priority, weight=base_weight + aging,
                     eligible_machines=eligible_m, eligible_operators=eligible_w,
                     setup_minutes=routing.setup_minutes,
                 )
@@ -149,7 +157,8 @@ def run_schedule(db: Session, strategy: str = "auto", time_limit: float = 20.0,
     else:
         weights = None
 
-    problem, calendar = build_problem(db, freeze=freeze, version=latest if freeze else None)
+    problem, calendar = build_problem(db, freeze=freeze, version=latest if freeze else None,
+                                      freeze_horizon_minutes=FREEZE_HORIZON_MINUTES if freeze else 0)
     if strategy == "changeover":
         result = solve_heuristic(problem, group_families=True)
     else:
@@ -159,7 +168,6 @@ def run_schedule(db: Session, strategy: str = "auto", time_limit: float = 20.0,
             fallback["status"] = f'{result["status"] if result else "NO_SOLVER"}→HEURISTIC'
             result = fallback
 
-    versions_count = db.query(models.ScheduleVersion).count()
     version = models.ScheduleVersion(
         strategy=strategy,
         solver=result["solver"],
@@ -229,6 +237,7 @@ def run_schedule(db: Session, strategy: str = "auto", time_limit: float = 20.0,
         "unscheduled": result.get("unscheduled", []),
         "warnings": problem.warnings[:20],
         "strategy_advice": advice,
+        "freeze_horizon_minutes": FREEZE_HORIZON_MINUTES if freeze else 0,
     }
     version.status = "ok"
     db.commit()
